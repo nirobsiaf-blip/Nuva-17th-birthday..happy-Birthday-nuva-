@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Nuva ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #ff85a1;
+            --dark-bg: #000;
+            --glass: rgba(0, 0, 0, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--dark-bg); color: white; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* --- Background Videos --- */
+        .bg-vid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -3; display: none; }
+        .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: -2; }
+
+        /* --- UI Elements --- */
+        #entrance-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: flex; justify-content: center; align-items: center; z-index: 10000; text-align: center; padding: 20px; }
+        #final-overlay { position: fixed; inset: 0; display: none; justify-content: center; align-items: center; z-index: 9000; text-align: center; padding: 20px; flex-direction: column; overflow: hidden; background: rgba(0,0,0,0.3); }
+        
+        .popup-content { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--primary-pink); padding: 30px; border-radius: 20px; backdrop-filter: blur(15px); max-width: 500px; width: 100%; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 25px; }
+        
+        button { padding: 12px 25px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 1rem; }
+        .btn-yes { background: var(--primary-pink); color: white; }
+        .btn-ready { background: white; color: black; }
+
+        section { min-height: 100vh; padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .glass-card { background: var(--glass); border: 1px solid var(--glass-border); padding: 25px; border-radius: 20px; backdrop-filter: blur(10px); width: 100%; max-width: 600px; text-align: center; margin-bottom: 30px; position: relative; }
+        .subject-card { text-align: left; margin-bottom: 25px; border-left: 4px solid var(--primary-pink); padding-left: 15px; }
+        h1 { font-size: 1.8rem; color: var(--primary-pink); margin-bottom: 15px; font-weight: 700; }
+        h2.subj-title { font-size: 1.1rem; color: #f8bbd0; margin-bottom: 8px; text-transform: uppercase; }
+        p.msg { line-height: 1.6; color: #f1f5f9; font-size: 0.95rem; }
+
+        /* --- Cake --- */
+        .cake-container { position: relative; width: 160px; height: 160px; margin: 20px auto; cursor: pointer; }
+        .cake { position: absolute; bottom: 0; width: 160px; height: 80px; background: #f48fb1; border-radius: 10px 10px 0 0; }
+        .candle { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 8px; height: 35px; background: gold; border-radius: 4px; }
+        .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 12px; height: 18px; background: orange; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 15px orange; animation: flicker 0.1s infinite alternate; }
+        @keyframes flicker { from { opacity: 0.8; } to { opacity: 1; } }
+
+        /* --- Game Area --- */
+        #game-area { position: relative; width: 100%; height: 300px; background: rgba(0,0,0,0.4); border-radius: 15px; overflow: hidden; border: 2px solid var(--primary-pink); margin-top: 20px; }
+        .nirob-target { position: absolute; width: 60px; height: 60px; background: white; border-radius: 50%; border: 3px solid var(--primary-pink); display: flex; align-items: center; justify-content: center; color: black; font-size: 10px; font-weight: bold; transition: 0.1s; cursor: crosshair; }
+
+        /* --- Quiz --- */
+        .quiz-option { display: block; width: 100%; padding: 12px; margin: 10px 0; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--soft-pink); border-radius: 10px; color: white; text-align: left; cursor: pointer; position: relative; }
+        .quiz-option.moving { position: absolute; width: auto; min-width: 100px; z-index: 100; }
+
+        /* --- Love Meter --- */
+        .meter-container { width: 100%; height: 30px; background: #222; border-radius: 20px; overflow: hidden; margin-top: 20px; border: 1px solid var(--soft-pink); }
+        .meter-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff85a1, #ff4d6d); }
+
+        /* --- Final Overlay Elements --- */
+        #fireworks-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9500; }
+        .final-text { font-size: 1.8rem; font-weight: bold; color: white; text-shadow: 0 0 20px var(--primary-pink); opacity: 0; transition: 2s; z-index: 9600; padding: 20px; }
+
+        .hidden { display: none !important; }
+        .fall-emoji { position: fixed; top: -50px; font-size: 30px; pointer-events: none; z-index: 9999; animation: fall 3s linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh); } }
+        footer { padding: 40px 20px; text-align: center; color: white; font-weight: 700; background: rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body>
+
+    <!-- Videos -->
+    <video id="vid-nuva" class="bg-vid" loop playsinline><source src="nuva.mp4" type="video/mp4"></video>
+    <video id="vid-birthday" class="bg-vid" loop playsinline><source src="birthday.mp4" type="video/mp4"></video>
+    <div class="video-overlay" id="vid-overlay"></div>
+
+    <!-- Entrance Pop-up -->
+    <div id="entrance-popup">
+        <div class="popup-content">
+            <h1>Happy Birthday Nuva ❤️</h1>
+            <p>happy birthday nuva ami tumar lagi ekta website banaisi tumar birthday wish kortam kori tumi kita ready ni?</p>
+            <div class="btn-group">
+                <button class="btn-yes" onclick="enterWorld()">yes ami ready</button>
+                <button class="btn-ready" onclick="enterWorld()">ready</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        
+        <!-- Section 1: Stories -->
+        <section>
+            <div class="glass-card">
+                <h1>To My Nuva ❤️</h1>
+                <div class="subject-card">
+                    <h2 class="subj-title">1 Introduction</h2>
+                    <p class="msg">Ami tumare kub beshi valobashi amar jibon o tumi awa pore taki amar pura jibon change oi gese tumi aiaw amar bad jinish gula niya mair dorbar koriya oguin saraiso hoyto eguin sariya amar kosto or tobe eguin tumi amar valar lagi u korso ar tumi eta ginnawo er lagi ami eta ar doriya rakhsi na tumar lagi ami eta sari disi...tumar loge jokon ami mati tokon amar ki poriman kushi lage ekta ami tumare kunu babe bujaitam partam na knew ba lagto na ami tumare pawar lagi oto koshto korlam koto ta mash tumar lagi behayami korlam etar lagi to ekon ami kushi deserve kori...amar life o tumi awar lagi donnobad ekon just ektaw dua tumi amar aingoto bhabe bou oitay.</p>
+                </div>
+                <div class="subject-card">
+                    <h2 class="subj-title">2 how we met</h2>
+                    <p class="msg">Hahaha.... Apurba thank you boin tui amare tair sobi deway aij ami taire birthday wish kortam pariar as a gf hisabe ekta low qualityr sobi dekiya ami tumar upre crush kaililam🙂 jai hok amrar tiktok o mat kotha eguin pura oshtir asil😂 amar 80% biya tik kora🤣🤣 amare koto reject kora dilay tumi😢shobta mono roibo..</p>
+                </div>
+                <div class="subject-card">
+                    <h2 class="subj-title">3 first impression</h2>
+                    <p class="msg">protom bar dekiya kunudin babsi na je tumi amar jibon o oto gurutopurno manush oijibay... Tumare poyla boishak o jedin dekhi edin taki ami buji lisi tumarew amar lagbo ebong edin u proposal pataislam oile tumar vai🙏 jesata ouk protom dekha koite gele poyla boishak edin tumar proti amar valobasha beshi toiri oisil...</p>
+                </div>
+                <div class="subject-card">
+                    <h2 class="subj-title">4 our best moment</h2>
+                    <p class="msg">Amrar best moment amar hisabe video call o jebla mati ar chat o fungami msg diya jebla hashi ebla oibo amar gese okan u lage tobe amar personal tumar loge best moment oilo jedin ami tumar hat protom bar dhori tokon amar shorile ki poriman kapise ek ami jani....</p>
+                </div>
+                <div class="subject-card">
+                    <h2 class="subj-title">5 my prayer for you</h2>
+                    <p class="msg">Amar ektaw dua tumar shamnor je jibon ase egula amar loge jaito kunu bipod aito na ba kunu situation aito na je amrar alada oua lagbo ami amar moton jototuk chesta korar kormu tumi tumar moto jototuk chesta korar korio baki ta allah vorosha vaigot lekha takhle nishchoi paimu insha allah....ar shuvo jonmodin ar dua kori tumar pore joto jibon aso shobshomoy hashi kushi taktay vobishot shundor oito tumar kunu bipod aito na.... Again happy birthday🖤</p>
+                </div>
+                <p style="font-style: italic; color: #ffeb3b; font-size: 0.8rem;">Niche scroll koro... 👇</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Cake -->
+        <section>
+            <div class="glass-card">
+                <p id="wish-instruction" style="color: #ffeb3b; font-weight: 600;">nuva mumbati nibanir age ekta wish koro pore mumbati nibaio</p>
+                <div class="cake-container" onclick="handleCakeClick()"><div class="candle" id="can"><div class="flame" id="flm"></div></div><div class="cake"></div></div>
+                <h2 id="bday-msg" class="hidden" style="color: var(--primary-pink); margin-top: 15px;">happy birthday nuvie🌹🖤</h2>
+                <div id="nirob-ask" class="hidden">
+                    <p>nirob: "amare cake khawaitay nani?"</p>
+                    <div id="nirob-face" style="width:100px; height:100px; background:#fff; border-radius:50%; display:none; margin:15px auto; border:3px solid var(--primary-pink); align-items:center; justify-content:center; color:black; font-weight:bold; font-size:0.7rem; text-align:center;">NIROB</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Gift Box -->
+        <section>
+            <div class="glass-card">
+                <h1>Tumar lagi Gift 🎁</h1>
+                <div style="font-size:80px; cursor:pointer;" onclick="openGift(this)">🎁</div>
+                <div id="gift-text" class="hidden" style="margin-top: 15px; font-size: 0.95rem; text-align: left; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 15px;">
+                    "gift paiso ni jani na... ekon ami july 7 tarik boiya website banaiar ami jani na ekono tumi gift paiso ki na tobe pailibay opekkha koro amar personal agent e late korto pare kiban"
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Gallery / Sorry -->
+        <section>
+            <div class="glass-card">
+                <h1>Nuva Gallery</h1>
+                <button class="btn-yes" onclick="triggerGalleryMsg()" style="margin: 20px 0;">Open Gallery</button>
+                <div id="sorry-area" class="hidden">
+                    <p id="sorry-msg" style="color: #fca5a5; font-weight: 600;"></p>
+                    <button id="sorry-btn" class="btn-ready" onclick="clickedSorry()">Sorry</button>
+                    <p id="timer-text" style="font-size: 1rem; margin-top: 10px; color: #cbd5e1;"></p>
+                </div>
+                <div id="sorry-success" class="hidden" style="color: #6ee7b7; font-weight: 600;">outto amar bou koto vala sorry koise🌚</div>
+            </div>
+        </section>
+
+        <!-- Section 5: Game -->
+        <section>
+            <div class="glass-card">
+                <h1>Amare martay ni? 🔫</h1>
+                <p style="font-size: 0.85rem; color: #f8bbd0; margin-bottom: 10px;">ami tumare oto din joto kosto disi shobtar lagi sorry amare martay ni maro (10 bar click koro)</p>
+                <div id="game-area"><div id="score-board" style="padding: 5px; font-weight: bold;">Score: 0</div></div>
+                <div id="game-win-msg" class="hidden" style="margin-top: 20px;">
+                    <p style="color: #f8bbd0; font-weight: 600; font-size: 1rem;">oto fara maridilay ni oto rag ni amar upre😭 ekon amare ummmmah dew🌚</p>
+                    <button class="btn-yes" onclick="clickedUmmah()" style="margin-top: 15px;">Ummmah 💋</button>
+                    <p id="u-timer" style="font-size: 0.9rem; margin-top: 10px;"></p>
+                </div>
+                <div id="u-success" class="hidden" style="color: #ff85a1; font-weight: 600;">ekon eno ummmah diso egu website o diso egge oito na website pakani sesh oialle whatsapp o jela tumi dew ola dio🙃</div>
+            </div>
+        </section>
+
+        <!-- Section 6: Love Meter -->
+        <section id="meter-sec">
+            <div class="glass-card">
+                <h1 style="font-size: 1.2rem;">tumar proti amar valobasha maphar mechine</h1>
+                <div class="meter-container"><div id="m-fill" class="meter-fill" style="width:0%"></div></div>
+                <span id="l-percent" style="font-size: 2.5rem; font-weight: 900; color: var(--primary-pink); margin-top: 10px; display: block;">0%</span>
+                <p id="m-final" class="hidden" style="margin-top: 15px; font-weight: 600; color: #ffeb3b; font-size: 1rem;">amar tumar proti valobasha maphar mechine abo toiri oise na ❤️</p>
+            </div>
+        </section>
+
+        <!-- Section 7: Quiz -->
+        <section id="q-sec">
+            <div class="glass-card" id="q-card">
+                <h1 style="color: #ffeb3b;">Chuto ekta Test ❤️</h1>
+                <p id="q-text" style="margin-bottom: 20px; font-weight: 600;"></p>
+                <div id="q-opts"></div>
+            </div>
+        </section>
+
+        <!-- Section 8: Final Letter Box -->
+        <section id="letter-sec" class="hidden">
+            <div class="glass-card">
+                <h2 style="color: var(--primary-pink); margin-bottom: 15px; font-size: 1.1rem;">ikta open korar lagi i love you koite oibo amare</h2>
+                <div style="font-size:70px; cursor:pointer;" onclick="showInput()">📩</div>
+                <div id="in-area" class="hidden">
+                    <input type="text" id="l-input" placeholder="Type i love you...">
+                    <br><button class="btn-yes" onclick="checkLove()">Submit</button>
+                </div>
+                <div id="n-reply" class="hidden" style="margin: 15px 0; font-weight: bold; color: #ff85a1;">nirob: "i love you too amar nuvie🖤"</div>
+                <div id="actual-letter" class="hidden" style="margin-top: 25px; text-align: left; line-height: 1.8; font-size: 0.9rem; white-space: pre-wrap;">tumi oto shomoy je amar website dorjo sohokare shobta korso ar shobta poriso etar lagi donnobad ekon ai main topic o eta shobta korsi kali ami tumar ajker day tare special banaitam kori ar sorry koitam kori... 
+
+Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or lagi e juddot asholew ami tumar gese kub beshi sorom paisi ebong amar bhul bujtam parsi sorry shobtar lagi tumare ami sai na kunudin koshto ditam er pore o dilai bibino jinish o ekta ar eno koiar na shobtar lagi amare tumi maf kori dilaio tumare ami kub beshu valobashi ar gift eta kila lagse?😊</div>
+            </div>
+        </section>
+
+        <!-- Section 9: End Button -->
+        <section id="end-button-sec" class="hidden">
+            <div class="glass-card">
+                <button class="btn-yes" style="padding: 20px 40px; font-size: 1.2rem; box-shadow: 0 0 20px var(--primary-pink);" onclick="startFinalCelebration()">
+                    celebrate your birthday with me ❤️
+                </button>
+            </div>
+        </section>
+
+        <footer>i love you nuva🖤</footer>
+    </div>
+
+    <!-- Final Display with Video -->
+    <div id="final-overlay">
+        <canvas id="fireworks-canvas"></canvas>
+        <div id="f-text-1" class="final-text">happy birthday amar nuvie...</div>
+        <div id="f-text-2" class="final-text" style="margin-top:20px; font-size: 1.2rem;">kila lagse amar website diya surprise egu?</div>
+        <button id="restart-btn" class="btn-ready hidden" style="margin-top: 40px; z-index: 10000;" onclick="location.reload()">abar shuru taki dektam</button>
+    </div>
+
+    <script>
+        let rainInterval = null, candle = false, ummah = false, meter = false, hits = 0, qIdx = 0, qWrong = 0;
+        let sorryClicked = false;
+        const v1 = document.getElementById('vid-nuva');
+        const v2 = document.getElementById('vid-birthday');
+
+        function enterWorld() {
+            document.getElementById('entrance-popup').style.display = 'none';
+            document.getElementById('main-content').classList.remove('hidden');
+            v1.style.display = 'block'; v1.play().catch(e => console.log("Play error")); 
+            v1.muted = false;
+            initGame(); setupMeter(); loadQ();
+        }
+
+        function handleCakeClick() {
+            if(!candle) {
+                document.getElementById('flm').style.display = 'none';
+                document.getElementById('wish-instruction').style.display = 'none';
+                document.getElementById('bday-msg').classList.remove('hidden');
+                setTimeout(() => document.getElementById('nirob-ask').classList.remove('hidden'), 1000);
+                candle = true;
+            } else {
+                const face = document.getElementById('nirob-face');
+                face.style.display = 'flex'; face.innerHTML = "Yummy! 😋";
+                setTimeout(() => { face.innerHTML = "NIROB"; }, 2000);
+            }
+        }
+
+        function openGift(el) { el.nextElementSibling.classList.remove('hidden'); el.innerHTML = "🔓"; }
+
+        function triggerGalleryMsg() {
+            alert("tumare koisi sobi ditay diso na nai eno sobi shobtat dong koro sobi diso na naile toilam one ono");
+            document.getElementById('sorry-area').classList.remove('hidden');
+            document.getElementById('sorry-msg').innerText = "ekon sorry kou okan or lagi";
+            let time = 10;
+            const t = setInterval(() => {
+                if(sorryClicked) { clearInterval(t); return; }
+                document.getElementById('timer-text').innerText = "Time: " + time + "s";
+                if(time <= 0) { 
+                    clearInterval(t); 
+                    if(!sorryClicked) startRain('😭'); 
+                }
+                time--;
+            }, 1000);
+        }
+        function clickedSorry() { 
+            sorryClicked = true; 
+            stopRain(); 
+            document.getElementById('sorry-area').classList.add('hidden'); 
+            document.getElementById('sorry-success').classList.remove('hidden'); 
+        }
+
+        function initGame() {
+            const area = document.getElementById('game-area');
+            const target = document.createElement('div');
+            target.className = 'nirob-target'; target.innerHTML = "NIROB";
+            area.appendChild(target);
+            const move = () => { target.style.left = Math.random()*(area.clientWidth-60)+"px"; target.style.top = Math.random()*(area.clientHeight-60)+"px"; };
+            move();
+            target.onclick = () => {
+                hits++; document.getElementById('score-board').innerText = "Score: " + hits;
+                if(hits >= 10) { target.remove(); document.getElementById('game-win-msg').classList.remove('hidden'); startUTimer(); }
+                else move();
+            };
+        }
+
+        function startUTimer() {
+            let time = 10;
+            const t = setInterval(() => {
+                if(ummah) { clearInterval(t); return; }
+                if(time <= 0) { clearInterval(t); startRain('😭'); }
+                time--;
+            }, 1000);
+        }
+        function clickedUmmah() { ummah = true; stopRain(); document.getElementById('game-win-msg').classList.add('hidden'); document.getElementById('u-success').classList.remove('hidden'); }
+
+        const questions = [
+            { q: "1. tumare shobche beshi ke valobashe?", a: ["Alien", "tiger", "nirob", "tiktiki"], c: 2 },
+            { q: "2. ajke kita din?", a: ["shorkari vote", "gummanir din", "mair korar din", "tumar jonmo din"], c: 3 },
+            { q: "3. amar shobtaki kita beshi vala lage?", a: ["ghum", "mobile", "nuvie", "shoytani"], c: 2 },
+            { q: "4. tumi amare bissash koro ni?", a: ["oy", "na", "jani na", "koitam na"], c: [0, 1] },
+            { q: "5. tumi amare sharajibon valobashbay ni?", a: ["oy", "na", "jani na", "oy insha allah"], c: 3 }
+        ];
+
+        function loadQ() {
+            const d = questions[qIdx]; document.getElementById('q-text').innerText = d.q;
+            const div = document.getElementById('q-opts'); div.innerHTML = '';
+            d.a.forEach((o, i) => {
+                const b = document.createElement('button'); b.className = 'quiz-option'; b.innerText = o;
+                const isC = Array.isArray(d.c) ? d.c.includes(i) : i === d.c;
+                if(!isC) {
+                    b.onmouseover = b.ontouchstart = () => { 
+                        qWrong++; if(qWrong==3) alert("tumi shotik answer jano er bade o fungami korray ni");
+                        b.classList.add('moving'); b.style.left = Math.random()*150+"px"; b.style.top = Math.random()*100+"px"; 
+                    };
+                } else {
+                    b.onclick = () => { qIdx++; if(qIdx < questions.length) loadQ(); else { document.getElementById('q-sec').classList.add('hidden'); document.getElementById('letter-sec').classList.remove('hidden'); } };
+                }
+                div.appendChild(b);
+            });
+        }
+
+        function setupMeter() {
+            const obs = new IntersectionObserver(es => {
+                if(es[0].isIntersecting && !meter) {
+                    meter = true; let c = 0;
+                    const t = setInterval(() => {
+                        c += 40; if(c > 2000) { clearInterval(t); document.getElementById('l-percent').innerHTML = "∞"; document.getElementById('m-fill').style.width = "100%"; document.getElementById('m-final').classList.remove('hidden'); }
+                        else { document.getElementById('l-percent').innerText = c+"%"; document.getElementById('m-fill').style.width = (c/20)+"%"; }
+                    }, 50);
+                }
+            }, {threshold: 0.5});
+            obs.observe(document.getElementById('meter-sec'));
+        }
+
+        function startRain(s) { 
+            if(rainInterval) return; 
+            rainInterval = setInterval(() => { 
+                const e = document.createElement('div'); e.className = 'fall-emoji'; e.innerText = s; e.style.left = Math.random()*100+"vw"; 
+                document.body.appendChild(e); setTimeout(()=>e.remove(), 3000); 
+            }, 300); 
+        }
+        function stopRain() { if(rainInterval) { clearInterval(rainInterval); rainInterval = null; } document.querySelectorAll('.fall-emoji').forEach(e => e.remove()); }
+        function showInput() { document.getElementById('in-area').classList.remove('hidden'); }
+        function checkLove() { 
+            if(document.getElementById('l-input').value.toLowerCase().includes("i love you")) {
+                document.getElementById('in-area').classList.add('hidden'); document.getElementById('n-reply').classList.remove('hidden');
+                setTimeout(() => { document.getElementById('actual-letter').classList.remove('hidden'); document.getElementById('end-button-sec').classList.remove('hidden'); document.getElementById('actual-letter').scrollIntoView(); }, 1000);
+            }
+        }
+
+        function startFinalCelebration() {
+            v1.pause(); v1.style.display = 'none';
+            document.getElementById('main-content').classList.add('hidden');
+            const overlay = document.getElementById('final-overlay');
+            overlay.style.display = 'flex';
+            
+            // Birthday Video Background
+            v2.style.display = 'block';
+            v2.play().catch(e => console.log("Final Video fail"));
+            v2.muted = false;
+            
+            initFireworks();
+            
+            setTimeout(() => { document.getElementById('f-text-1').style.opacity = '1'; }, 2000);
+            setTimeout(() => { 
+                document.getElementById('f-text-1').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('f-text-2').style.opacity = '1';
+                    document.getElementById('restart-btn').classList.remove('hidden');
+                }, 2000);
+            }, 10000);
+        }
+
+        function initFireworks() {
+            const canvas = document.getElementById('fireworks-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let particles = [];
+            function create() {
+                const x = Math.random() * canvas.width, y = canvas.height, color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                for(let i=0; i<30; i++) particles.push({ x, y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10-15, alpha: 1, color });
+            }
+            setInterval(create, 800);
+            function anim() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, i) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.alpha -= 0.01;
+                    ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2); ctx.fill();
+                    if(p.alpha <= 0) particles.splice(i, 1);
+                });
+                requestAnimationFrame(anim);
+            }
+            anim();
+        }
+    </script>
+</body>
+</html>
