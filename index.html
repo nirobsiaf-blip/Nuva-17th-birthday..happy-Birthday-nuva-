@@ -7,7 +7,7 @@
     <title>Happy Birthday Nuva ❤️</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-pink: #ff4d6d;
@@ -34,9 +34,6 @@
         html { background-color: var(--obsidian); scroll-behavior: smooth; }
 
         body {
-            /* NOTE: no background-color here on purpose.
-               html holds the background so the fixed background videos
-               (negative z-index) stay visible behind the content. */
             color: var(--text-soft);
             overflow-x: hidden;
             position: relative;
@@ -194,6 +191,21 @@
         }
         .btn-music:active { transform: scale(0.96); }
 
+        #music-status-msg {
+            color: var(--gold);
+            font-size: 1rem;
+            margin-top: -5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            min-height: 20px;
+            background: rgba(245, 217, 139, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px dashed rgba(245, 217, 139, 0.3);
+            text-align: left;
+            line-height: 1.5;
+        }
+
         #final-overlay {
             position: fixed;
             inset: 0;
@@ -238,8 +250,6 @@
 
         /* --- Videos --- */
         .bg-vid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -3; display: none; }
-        /* nuva.mp4: show the whole frame instead of over-zooming on mobile portrait.
-           The letterbox gaps blend into a themed gradient instead of harsh black. */
         #vid-nuva {
             object-fit: contain;
             background:
@@ -248,7 +258,7 @@
                 linear-gradient(180deg, #0a0610 0%, #05040a 45%, #0a0610 100%);
         }
 
-        /* --- Floating hearts backdrop (decorative) --- */
+        /* --- Floating hearts backdrop --- */
         .float-hearts {
             position: fixed;
             inset: 0;
@@ -461,8 +471,7 @@
             padding: 8px 14px;
             font-weight: 600;
             color: var(--rose-gold);
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
         }
         .nirob-target {
             position: absolute;
@@ -624,7 +633,7 @@
 
         .hidden { display: none !important; }
         .fall-emoji { position: fixed; top: -50px; font-size: 35px; pointer-events: none; z-index: 9999; animation: fall 3s linear forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(40deg); opacity: 0.4; } }
+        @keyframes fall { to { transform: translateY(110vh) rotate(40deg); opacity: 0.7; } }
 
         footer {
             padding: 48px 20px;
@@ -637,11 +646,6 @@
             color: var(--rose-gold);
             text-shadow: 0 0 20px rgba(255,77,109,0.4);
         }
-
-        /* misc text accents preserved from original */
-        .accent-gold { color: var(--gold); font-weight: 600; }
-        .accent-pink { color: var(--soft-pink); }
-        .accent-rose { color: var(--rose-gold); }
 
         /* --- Countdown --- */
         .count-label {
@@ -685,12 +689,6 @@
             color: var(--rose-gold);
             margin-top: 6px;
             font-weight: 600;
-        }
-        .count-divider {
-            width: 60%;
-            height: 1px;
-            margin: 24px auto 18px;
-            background: linear-gradient(90deg, transparent, rgba(255,183,178,0.45), transparent);
         }
 
         /* --- Heart Catcher game --- */
@@ -736,6 +734,25 @@
             display: block;
             margin: 8px 0;
             text-shadow: 0 0 24px rgba(255,77,109,0.6);
+            transition: transform 0.2s ease;
+        }
+
+        #gallery-sorry-text, #gallery-sorry-warning {
+            color: var(--soft-pink);
+            font-weight: 500;
+            font-size: 1.05rem;
+            background: rgba(255, 77, 109, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 77, 109, 0.3);
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 12px;
+        }
+        #gallery-sorry-warning {
+            color: #ffb7b2;
+            border-color: rgba(255, 183, 178, 0.4);
+            background: rgba(255, 183, 178, 0.08);
         }
 
         @media (max-width: 480px) {
@@ -752,11 +769,8 @@
 <body>
 
     <div class="ambient"></div>
-
-    <!-- Decorative floating hearts backdrop -->
     <div class="float-hearts" id="float-hearts" aria-hidden="true"></div>
 
-    <!-- SVG gradient defs for the heart -->
     <svg width="0" height="0" style="position:absolute">
         <defs>
             <linearGradient id="heartGrad" x1="0" y1="0" x2="1" y2="1">
@@ -767,10 +781,7 @@
         </defs>
     </svg>
 
-    <!-- Video for Home Page Music -->
     <video id="vid-home-audio" loop playsinline><source src="nuvaheart.mp4" type="video/mp4"></video>
-
-    <!-- Background Videos -->
     <video id="vid-nuva" class="bg-vid" loop playsinline><source src="nuva.mp4" type="video/mp4"></video>
     <video id="vid-birthday" class="bg-vid" loop playsinline><source src="birthday.mp4" type="video/mp4"></video>
     <div class="video-overlay" id="vid-overlay"></div>
@@ -785,7 +796,8 @@
             </div>
         </div>
         <div class="popup-content">
-            <button class="btn-music" onclick="playFirstMusic()">Play Music 🎵</button>
+            <button class="btn-music" id="music-trigger-btn" onclick="playFirstMusic()">Play Music 🎵</button>
+            <div id="music-status-msg" class="hidden"></div>
             <h1>Happy Birthday Nuva ❤️</h1>
             <p class="msg">happy birthday nuva ami tumar lagi ekta website banaisi tumar birthday wish kortam kori tumi shobta korio jeta koua oibo kortay eta shobta ami add korsi tumare feel koraitam kori ami e project or lagi onk koshto korsi tumi plaese shobta korio shomoy niya kicchu miss dio na.....okay taile tumi kita ready ni?</p>
             <div class="btn-group">
@@ -837,7 +849,7 @@
                     <div class="count-box"><span class="count-num" id="up-m">0</span><span class="count-unit">Minute</span></div>
                     <div class="count-box"><span class="count-num" id="up-s">0</span><span class="count-unit">Second</span></div>
                 </div>
-                <p class="msg" style="font-size:0.85rem; color:var(--rose-gold);">eto din dhore tumare valobashi... ar bashtei thakmu 🖤</p>
+                <p class="msg" style="font-size:0.85rem; color:var(--rose-gold); margin-top: 15px;">eto din dhore tumare valobashi... ar bashtei thakmu 🖤</p>
                 <p class="scroll-hint">Niche scroll koro... 👇</p>
             </div>
         </section>
@@ -865,7 +877,7 @@
                 <h1>Tumar lagi Gift 🎁</h1>
                 <div class="gift-emoji" onclick="openGift(this)">🎁</div>
                 <div id="gift-text" class="hidden reveal-box">
-                    "gift paiso ni jani na... ekon ami july 7 tarik boiya website banaiar ami jani na ekono tumi gift paiso ki na tobe pailibay opekkha koro amar personal agent e late korto pare kiban"
+                    "gift paiso ni jani na... ekon ami july 7 tarik boiya website banaiar ami jani na ekono tumi gift paiso ki na tobe pailibay opekkha koro amar personal agent e late karto pare kiban"
                 </div>
             </div>
         </section>
@@ -874,11 +886,12 @@
         <section>
             <div class="glass-card">
                 <h1>Nuva Gallery</h1>
-                <button class="btn-yes" onclick="triggerSorry()">Open Gallery</button>
+                <button class="btn-yes" id="gallery-btn" onclick="triggerSorry()">Open Gallery</button>
                 <div id="sorry-box" class="hidden" style="margin-top:18px;">
-                    <p id="s-msg" style="color:var(--soft-pink); font-weight:600; margin-bottom:15px;"></p>
+                    <div id="gallery-sorry-text"></div>
+                    <div id="gallery-sorry-warning"></div>
                     <button class="btn-ready" onclick="acceptSorry()">Sorry</button>
-                    <p id="timer" class="accent-rose" style="font-size:0.9rem; margin-top:12px;"></p>
+                    <p id="timer" style="color:var(--rose-gold); font-size:0.95rem; margin-top:12px; font-weight:600;"></p>
                 </div>
                 <div id="s-done" class="hidden" style="color:#6ee7b7; font-weight:600; margin-top:16px;">outto amar bou koto vala sorry koise🌚</div>
             </div>
@@ -893,7 +906,7 @@
                 <div id="win-msg" class="hidden" style="margin-top:18px;">
                     <p class="msg" style="color:var(--rose-gold);">oto fara maridilay ni oto rag ni amar upre😭 ekon amare ummmmah dew🌚</p>
                     <button class="btn-yes" style="margin-top:12px;" onclick="clickedUmmah()">Ummmah 💋</button>
-                    <p id="u-timer" class="accent-rose" style="font-size:0.85rem; margin-top:10px;"></p>
+                    <p id="u-timer" style="color:var(--rose-gold); font-size:0.85rem; margin-top:10px;"></p>
                 </div>
                 <div id="u-done" class="hidden" style="color:var(--soft-pink); margin-top:16px;">ekon eno ummmah diso egu website o diso egge oito na website pakani sesh oialle whatsapp o jela tumi dew ola dio🙃</div>
             </div>
@@ -905,9 +918,9 @@
                 <h1>Heart Dhoro 🖤</h1>
                 <p class="msg" style="font-size:0.85rem; color:var(--rose-gold); margin-bottom:6px;">Ami tumar lagi joto valobasha fataisi shob doro ufre taki forbo oguin dorio (15 ta dhorle tumi win)</p>
                 <button class="btn-yes" id="catch-start" onclick="startCatch()">Start koro 💕</button>
-                <p id="catch-score" class="accent-gold hidden" style="font-weight:600; margin-top:10px;">Dhorso: 0 / 15</p>
+                <p id="catch-score" class="hidden" style="font-weight:600; margin-top:10px; color:var(--gold);">Dhorso: 0 / 15</p>
                 <div id="catch-area" class="hidden"></div>
-                <div id="catch-win" class="hidden" style="margin-top:16px; color:var(--soft-pink); font-weight:600;">shobta valobasha dhori laiso... etai to amar nuvie🥹🖤</div>
+                <div id="catch-win" class="hidden" style="margin-top:16px; color:var(--soft-pink); font-weight:600;">wow tumi shara heart doriliso good girl🙂🙏</div>
             </div>
         </section>
 
@@ -918,8 +931,9 @@
                 <p class="msg" style="font-size:0.85rem; color:var(--rose-gold); margin-bottom:6px;">5 second or bitre joto beshi click korbay toto beshi tumi amare valobasho... deki koto valobasho tumi amare</p>
                 <span class="tap-count" id="tap-count">0</span>
                 <button class="tap-btn" id="tap-btn" onclick="doTap()">Valobashi tap koro ❤️</button>
-                <p id="tap-timer" class="accent-rose" style="font-size:0.9rem; margin-top:12px;">Time: 5s</p>
-                <div id="tap-result" class="hidden accent-gold" style="font-weight:600; margin-top:12px;"></div>
+                <p id="tap-timer" style="color:var(--rose-gold); font-size:0.9rem; margin-top:12px;">Time: 5s</p>
+                <div id="tap-result" class="hidden" style="font-weight:600; margin-top:14px; font-size:1.1rem; color:var(--gold);"></div>
+                <button class="btn-ready hidden" id="tap-retry-btn" style="margin-top:16px;" onclick="retryTapGame()">abar kortam agor bar bucchi na</button>
             </div>
         </section>
 
@@ -929,7 +943,7 @@
                 <h1 style="font-size:1.5rem;">tumar proti amar valobasha maphar mechine</h1>
                 <div class="meter-container"><div id="fill" class="meter-fill"></div></div>
                 <span id="percent">0%</span>
-                <p id="m-msg" class="hidden accent-gold" style="margin-top:12px;">amar tumar proti valobasha maphar mechine abo toiri oise na ❤️</p>
+                <p id="m-msg" class="hidden" style="margin-top:12px; color:var(--gold);">amar tumar proti valobasha maphar mechine abo toiri oise na ❤️</p>
             </div>
         </section>
 
@@ -981,8 +995,11 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
         const vFinal = document.getElementById('vid-birthday');
 
         function playFirstMusic() {
-            vHome.play();
-            alert("Music started! Now read the message below ❤️");
+            vHome.play().catch(e => console.log("Audio play failed"));
+            const statusBox = document.getElementById('music-status-msg');
+            statusBox.classList.remove('hidden');
+            statusBox.innerHTML = '<strong>nirob:</strong> music shuru ekon msg ta poro poriya ready ou';
+            document.getElementById('music-trigger-btn').style.display = 'none';
         }
 
         function enterWorld() {
@@ -994,7 +1011,6 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
             initGame(); setupMeter(); loadQuiz(); initReveals(); startCountdown(); initFloatingHearts();
         }
 
-        /* --- Decorative floating hearts --- */
         function initFloatingHearts() {
             const box = document.getElementById('float-hearts');
             if (!box || box.dataset.on) return;
@@ -1014,13 +1030,11 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
             setInterval(spawn, 1400);
         }
 
-        /* --- Live Countdown: proposal (6 Sep 2024) up, birthday (15 Jul 2026) down --- */
         function startCountdown() {
             const proposal = new Date('2024-09-06T00:00:00').getTime();
             const pad = (n) => (n < 10 ? '0' + n : '' + n);
             const tick = () => {
                 const now = Date.now();
-                // count up since proposal
                 let up = Math.max(0, now - proposal);
                 document.getElementById('up-d').innerText = Math.floor(up / 86400000);
                 document.getElementById('up-h').innerText = pad(Math.floor(up / 3600000) % 24);
@@ -1085,18 +1099,29 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
             if (!tapRunning) {
                 tapRunning = true; tapCount = 0; tapTimeLeft = 5;
                 document.getElementById('tap-result').classList.add('hidden');
+                document.getElementById('tap-retry-btn').classList.add('hidden');
+                document.getElementById('tap-count').style.transform = "scale(1)";
                 tapInterval = setInterval(() => {
                     tapTimeLeft--;
                     document.getElementById('tap-timer').innerText = "Time: " + tapTimeLeft + "s";
                     if (tapTimeLeft <= 0) {
                         clearInterval(tapInterval); tapRunning = false;
                         document.getElementById('tap-timer').innerText = "Shesh! ⏰";
+                        document.getElementById('tap-btn').classList.add('hidden');
+                        document.getElementById('tap-count').style.transform = "scale(1.4)";
+                        
                         let msg;
-                        if (tapCount < 20) msg = tapCount + " bar... eto kom? ari ari amare aro valobasho🥺";
-                        else if (tapCount < 40) msg = tapCount + " bar valobasho... mashallah shundor❤️";
-                        else msg = tapCount + " bar!! eto valobasha?? ami to golia gelam nuvie🥹💞";
+                        if (tapCount >= 1 && tapCount <= 10) {
+                            msg = 'nirob: "oto kom ni amar lagi tumar valobasha😢"';
+                        } else if (tapCount >= 11) {
+                            msg = "ishhh fura goli gesi oto valobasha ish ish🫠";
+                        } else {
+                            msg = "kunu tap koro nai knew? 🥺";
+                        }
+                        
                         const r = document.getElementById('tap-result');
                         r.innerText = msg; r.classList.remove('hidden');
+                        document.getElementById('tap-retry-btn').classList.remove('hidden');
                     }
                 }, 1000);
             }
@@ -1104,7 +1129,19 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
             document.getElementById('tap-count').innerText = tapCount;
         }
 
-        /* Elegant scroll reveal for cards */
+        function retryTapGame() {
+            tapCount = 0;
+            tapRunning = false;
+            tapTimeLeft = 5;
+            if (tapInterval) clearInterval(tapInterval);
+            document.getElementById('tap-count').innerText = "0";
+            document.getElementById('tap-count').style.transform = "scale(1)";
+            document.getElementById('tap-timer').innerText = "Time: 5s";
+            document.getElementById('tap-result').classList.add('hidden');
+            document.getElementById('tap-retry-btn').classList.add('hidden');
+            document.getElementById('tap-btn').classList.remove('hidden');
+        }
+
         function initReveals() {
             const cards = document.querySelectorAll('.glass-card');
             const io = new IntersectionObserver((entries) => {
@@ -1130,18 +1167,31 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
         function openGift(el) { el.nextElementSibling.classList.remove('hidden'); el.innerHTML = "🔓"; }
 
         function triggerSorry() {
-            alert("tumare koisi sobi ditay diso na nai eno sobi shobtat dong koro sobi diso na naile toilam one ono");
+            document.getElementById('gallery-btn').style.display = 'none';
             document.getElementById('sorry-box').classList.remove('hidden');
-            document.getElementById('s-msg').innerText = "ekon sorry kou okan or lagi";
+            document.getElementById('gallery-sorry-text').innerHTML = '<strong>nirob:</strong> "tumare koisi sobi ditay diso na nai eno sobi shobtat dong koro sobi diso na naile toilam one ono"';
+            document.getElementById('gallery-sorry-warning').innerHTML = '"ekon amare sorry kou okan or lagi naile ami kandimu"';
             let t = 10;
             const it = setInterval(() => {
                 if(sorry) { clearInterval(it); return; }
                 document.getElementById('timer').innerText = "Time: " + t + "s";
-                if(t <= 0) { clearInterval(it); if(!sorry) startRain('😭'); }
+                if(t <= 0) { 
+                    clearInterval(it); 
+                    if(!sorry) {
+                        startRain('😭');
+                        setTimeout(() => { stopRain(); }, 7000);
+                    } 
+                }
                 t--;
             }, 1000);
         }
-        function acceptSorry() { sorry = true; stopRain(); document.getElementById('sorry-box').classList.add('hidden'); document.getElementById('s-done').classList.remove('hidden'); }
+        
+        function acceptSorry() { 
+            sorry = true; 
+            stopRain(); 
+            document.getElementById('sorry-box').classList.add('hidden'); 
+            document.getElementById('s-done').classList.remove('hidden'); 
+        }
 
         function initGame() {
             const area = document.getElementById('game-area');
@@ -1156,15 +1206,23 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
                 else mv();
             };
         }
+        
         function startUTimer() {
             let t = 10;
             const it = setInterval(() => {
                 if(ummah) { clearInterval(it); return; }
                 document.getElementById('u-timer').innerText = "Time: " + t + "s";
-                if(t <= 0) { clearInterval(it); startRain('😭'); }
+                if(t <= 0) { 
+                    clearInterval(it); 
+                    if(!ummah) {
+                        startRain('😭');
+                        setTimeout(() => { stopRain(); }, 7000);
+                    }
+                }
                 t--;
             }, 1000);
         }
+        
         function clickedUmmah() { ummah = true; stopRain(); document.getElementById('win-msg').classList.add('hidden'); document.getElementById('u-done').classList.remove('hidden'); }
 
         const questions = [
@@ -1180,7 +1238,6 @@ Sorry okan or lagi koydin age je tumar ar amar ekta boro juddo lagigesil okan or
             d.a.forEach((o, i) => {
                 const b = document.createElement('button'); b.className = 'quiz-option'; b.innerText = o;
                 if(i !== d.c) {
-                    // Smooth gliding escape using CSS translate (works on touch + mouse)
                     const flee = (ev) => {
                         if (ev && ev.cancelable) ev.preventDefault();
                         if (!b.classList.contains('moving')) {
